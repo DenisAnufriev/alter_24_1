@@ -10,7 +10,9 @@ class DogTestCase(APITestCase):
 
     def setUp(self):
         self.user = User.objects.create(email="admin@sky.pro")
-        self.breed = Breed.objects.create(name="Лабрадор", description="Очень красивая собака")
+        self.breed = Breed.objects.create(
+            name="Лабрадор", description="Очень красивая собака"
+        )
         self.dog = Dog.objects.create(name="Гром", breed=self.breed, owner=self.user)
         self.client.force_authenticate(user=self.user)
 
@@ -18,59 +20,31 @@ class DogTestCase(APITestCase):
         url = reverse("dogs:dog-detail", args=(self.dog.pk,))
         response = self.client.get(url)
         data = response.json()
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(
-            data.get("name"),
-            self.dog.name
-        )
+        self.assertEqual(data.get("name"), self.dog.name)
 
     def test_dog_create(self):
         url = reverse("dogs:dog-list")
-        data = {
-            "name": "Форест"
-        }
+        data = {"name": "Форест"}
         response = self.client.post(url, data)
         # print(response.json())
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_201_CREATED
-        )
-        self.assertEqual(
-            Dog.objects.all().count(),
-            2
-        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Dog.objects.all().count(), 2)
 
     def test_dog_update(self):
         url = reverse("dogs:dog-detail", args=(self.dog.pk,))
-        data = {
-            "name": "Форест"
-        }
+        data = {"name": "Форест"}
         response = self.client.patch(url, data)
         data = response.json()
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
-        self.assertEqual(
-            data.get("name"),
-            "Форест"
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.get("name"), "Форест")
 
     def test_dog_delete(self):
         url = reverse("dogs:dog-detail", args=(self.dog.pk,))
         response = self.client.delete(url)
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_204_NO_CONTENT
-        )
-        self.assertEqual(
-            Dog.objects.all().count(),
-            0
-        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Dog.objects.all().count(), 0)
 
     def test_dog_list(self):
         url = reverse("dogs:dog-list")
@@ -85,9 +59,7 @@ class DogTestCase(APITestCase):
                     "id": self.dog.pk,
                     "breed": {
                         "id": self.breed.pk,
-                        "dogs": [
-                            self.dog.name
-                        ],
+                        "dogs": [self.dog.name],
                         "name": self.breed.name,
                         "description": self.breed.description,
                         "owner": None,
@@ -95,23 +67,21 @@ class DogTestCase(APITestCase):
                     "name": self.dog.name,
                     "photo": None,
                     "date_born": None,
-                    "owner": self.user.pk
+                    "owner": self.user.pk,
                 },
-            ]
+            ],
         }
-        self.assertEqual(
-            response.status_code, status.HTTP_200_OK
-        )
-        self.assertEqual(
-            data, result
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data, result)
 
 
 class BreedTestCase(APITestCase):
 
     def setUp(self):
         self.user = User.objects.create(email="admin@sky.pro")
-        self.breed = Breed.objects.create(name="Лабрадор", description="Очень красивая собака", owner=self.user)
+        self.breed = Breed.objects.create(
+            name="Лабрадор", description="Очень красивая собака", owner=self.user
+        )
         self.dog = Dog.objects.create(name="Гром", breed=self.breed, owner=self.user)
         self.client.force_authenticate(user=self.user)
 
@@ -119,59 +89,31 @@ class BreedTestCase(APITestCase):
         url = reverse("dogs:breed-retrieve", args=(self.breed.pk,))
         response = self.client.get(url)
         data = response.json()
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(
-            data.get("name"),
-            self.breed.name
-        )
+        self.assertEqual(data.get("name"), self.breed.name)
 
     def test_breed_create(self):
         url = reverse("dogs:breed-create")
-        data = {
-            "name": "Овчарка"
-        }
+        data = {"name": "Овчарка"}
         response = self.client.post(url, data)
         # print(response.json())
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_201_CREATED
-        )
-        self.assertEqual(
-            Breed.objects.all().count(),
-            2
-        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Breed.objects.all().count(), 2)
 
     def test_breed_update(self):
         url = reverse("dogs:breed-update", args=(self.breed.pk,))
-        data = {
-            "name": "Колли"
-        }
+        data = {"name": "Колли"}
         response = self.client.patch(url, data)
         data = response.json()
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
-        self.assertEqual(
-            data.get("name"),
-            "Колли"
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data.get("name"), "Колли")
 
     def test_breed_delete(self):
         url = reverse("dogs:breed-delete", args=(self.breed.pk,))
         response = self.client.delete(url)
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_204_NO_CONTENT
-        )
-        self.assertEqual(
-            Breed.objects.all().count(),
-            0
-        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Breed.objects.all().count(), 0)
 
     def test_breed_list(self):
         url = reverse("dogs:breed-list")
@@ -184,18 +126,12 @@ class BreedTestCase(APITestCase):
             "results": [
                 {
                     "id": self.breed.pk,
-                    "dogs": [
-                        self.dog.name
-                    ],
+                    "dogs": [self.dog.name],
                     "name": self.breed.name,
                     "description": self.breed.description,
                     "owner": self.user.pk,
-        },
-        ]
+                },
+            ],
         }
-        self.assertEqual(
-            response.status_code, status.HTTP_200_OK
-        )
-        self.assertEqual(
-            data, result
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data, result)

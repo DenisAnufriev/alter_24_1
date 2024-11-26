@@ -2,9 +2,14 @@ from django.urls import path
 from rest_framework.routers import SimpleRouter
 
 from dogs.apps import DogsConfig
-from dogs.views import (BreedCreateAPIView, BreedDestroyAPIView,
-                        BreedListAPIView, BreedRetrieveAPIView,
-                        BreedUpdateAPIView, DogViewSet)
+from dogs.views import (
+    BreedCreateAPIView,
+    BreedDestroyAPIView,
+    BreedListAPIView,
+    BreedRetrieveAPIView,
+    BreedUpdateAPIView,
+    DogViewSet,
+)
 
 app_name = DogsConfig.name
 

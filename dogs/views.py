@@ -16,6 +16,9 @@ from dogs.serializer import BreedSerializer, DogSerializer, DogDetailSerializer
 from users.permissions import IsModer, IsOwner
 
 
+# @method_decorator(name='list', decorator=swagger_auto_schema(
+#     operation_description="description from swagger_auto_schema via method_decorator"
+# ))
 class DogViewSet(ModelViewSet):
     queryset = Dog.objects.all()
     filter_backends = [
@@ -77,9 +80,7 @@ class BreedUpdateAPIView(UpdateAPIView):
     permission_classes = (IsAuthenticated, IsModer | IsOwner)
 
 
-
 class BreedDestroyAPIView(DestroyAPIView):
     queryset = Breed.objects.all()
     serializer_class = BreedSerializer
     permission_classes = (IsAuthenticated, IsOwner | ~IsModer)
-
