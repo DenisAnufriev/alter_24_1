@@ -3,10 +3,9 @@ import stripe
 from forex_python.converter import CurrencyRates
 from rest_framework import status
 
-from config.settings import CUR_API_KEY
+from config.settings import CUR_API_KEY, STRIPE_API_KEY
 
-# stripe.api_key = STRIPE_API_KEY
-stripe.api_key = "sk_test_51QPVjxGqt8TjpnKOSLspS83pEQGlE8MQc0A2DLe5uTdkhre5ZmNZ185Z4FGds126JamQTSDhwYHdQZSleBRupaPe0018DiWyhK"
+stripe.api_key = STRIPE_API_KEY
 
 
 def convert_rub_to_usd(amount):
