@@ -1,5 +1,7 @@
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from rest_framework.decorators import action
 from rest_framework.generics import (
     CreateAPIView,
     DestroyAPIView,
@@ -8,11 +10,13 @@ from rest_framework.generics import (
     UpdateAPIView,
 )
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from dogs.models import Breed, Dog
 from dogs.paginations import CustomPagination
 from dogs.serializer import BreedSerializer, DogSerializer, DogDetailSerializer
+from dogs.tasks import send_information_about_like
 from users.permissions import IsModer, IsOwner
 
 
@@ -49,6 +53,20 @@ class DogViewSet(ModelViewSet):
         elif self.action == "destroy":
             self.permission_classes = (~IsModer | IsOwner,)
         return super().get_permissions()
+
+    @action(detail=True, methods=("post",))
+    def likes(self, request, pk):
+        # email = "wenom666@mail.ru"
+        dog = get_object_or_404(Dog, pk=pk)
+        if dog.likes.filter(pk=request.user.pk).exists():
+            dog.likes.remove(request.user)
+        else:
+            dog.likes.add(request.user)
+            send_information_about_like.delay(dog.owner.email)
+            # send_information_about_like.delay(email)
+        serializer = self.get_serializer(dog)
+        return Response(data=serializer.data)
+
 
 
 class BreedCreateAPIView(CreateAPIView):
